@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tab Content Manager</title>
+  <style>
+    body {
+      background: #1e1e1e;
+      color: white;
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap; /* 👈 Cho phép xuống dòng */
+      padding: 10px;
+      background: #333;
+    }
+
+    .tab {
+      padding: 10px;
+      background: #444;
+      margin: 5px 5px 0 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #007bff;
+    }
+
+    .delete-button {
+      margin: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background: #e60000;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 6em;
+      margin: 5px 0;
+      resize: vertical;
+    }
+
+    button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tab bar -->
+  <div class="tab-bar" id="tabBar"></div>
+
+  <!-- Delete button nằm dưới tab bar -->
+  <button class="delete-button" onclick="deleteCurrentTab()">Delete</button>
+
+  <!-- Nội dung chỉnh sửa -->
+  <div class="container">
+    <input type="text" id="tabName" placeholder="Tab name" style="width: 300px;" />
+    <button onclick="saveTab()">Save</button>
+    <br>
+    <textarea id="mainContent" placeholder="Paste 500 lines here..." rows="10" style="width: 80%;"></textarea>
+    <div id="textAreas"></div>
+  </div>
+
+  <script>
+    let tabs = [];
+    let currentTabId = null;
+
+    function fetchTabs() {
+      fetch('http://localhost:3000/api/tabs')
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            tabs = data;
+            renderTabs();
+          } else {
+            console.error('Lỗi lấy danh sách tab:', data);
+          }
+        })
+        .catch(err => console.error('Lỗi fetchTabs:', err));
+    }
+
+    function renderTabs() {
+      const tabBar = document.getElementById('tabBar');
+      tabBar.innerHTML = '';
+    
+      tabs.forEach(tab => {
+        const div = document.createElement('div');
+        div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
+        div.innerText = tab.name;
+        div.onclick = () => {
+          currentTabId = tab.id;
+          document.getElementById('tabName').value = tab.name;
+          document.getElementById('mainContent').value = tab.content;
+          renderContentBoxes(tab.content);
+          renderTabs();
+        };
+        tabBar.appendChild(div);
+      });
+    
+      const plus = document.createElement('div');
+      plus.className = 'tab';
+      plus.innerText = '+';
+      plus.onclick = () => {
+        document.getElementById('tabName').value = '';
+        document.getElementById('mainContent').value = '';
+        currentTabId = null;
+        renderContentBoxes('');
+        renderTabs();
+      };
+      tabBar.appendChild(plus);
+    }
+
+    function saveTab() {
+      const name = document.getElementById('tabName').value;
+      const content = document.getElementById('mainContent').value;
+    
+      const url = currentTabId
+        ? `http://localhost:3000/api/tabs/${currentTabId}`
+        : 'http://localhost:3000/api/tabs';
+    
+      const method = currentTabId ? 'PUT' : 'POST';
+    
+      fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, content, tabId: currentTabId })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Saved:', data);
+          fetchTabs();
+          renderContentBoxes(content);
+        })
+        .catch(err => console.error('Lỗi lưu tab:', err));
+    }
+
+    function deleteCurrentTab() {
+      if (!currentTabId) {
+        alert("No tab selected.");
+        return;
+      }
+      if (!confirm("Are you sure you want to delete this tab?")) return;
+      fetch(`http://localhost:3000/api/tabs/${currentTabId}`, {
+        method: 'DELETE'
+      })
+        .then(() => {
+          currentTabId = null;
+          document.getElementById('tabName').value = '';
+          document.getElementById('mainContent').value = '';
+          renderContentBoxes('');
+          fetchTabs();
+        })
+        .catch(err => console.error('Lỗi xóa tab:', err));
+    }
+
+    function renderContentBoxes(content) {
+      const lines = content.split('\n');
+      const chunks = Array.from({ length: 5 }, (_, i) =>
+        lines.slice(i * 100, (i + 1) * 100).join('\n')
+      );
+
+      const container = document.getElementById('textAreas');
+      container.innerHTML = '';
+
+      chunks.forEach(chunk => {
+        const textarea = document.createElement('textarea');
+        textarea.value = chunk;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.innerText = 'Copy';
+        copyBtn.onclick = () => {
+          textarea.select();
+          document.execCommand('copy');
+          copyBtn.innerText = 'Copied!';
+          setTimeout(() => copyBtn.innerText = 'Copy', 1000);
+        };
+
+        container.appendChild(textarea);
+        container.appendChild(copyBtn);
+      });
+    }
+
+    
+
+    fetchTabs();
+  </script>
+</body>
+</html>
