@@ -1,18 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+// Cấu hình CORS đúng
 app.use(cors({
-    origin: 'https://cartnguyentam.onrender.com',
+    origin: 'https://cartnguyentam.onrender.com', // frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
-  }));
+}));
+
 app.use(express.json());
-const path = require('path');
 
 // Phục vụ static frontend
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 // Thiết lập kết nối PostgreSQL (Neon)
 const pool = new Pool({
   host: process.env.DB_HOST,         // ví dụ: 'ep-happy-1234.ap-southeast-1.aws.neon.tech'
