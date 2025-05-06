@@ -1,25 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: ['https://cartnguyentam.onrender.com', 'http://localhost:3000']
-}));
+const app = express();
+const port = 3000;
+
+app.use(cors());
 app.use(express.json());
 
-// PostgreSQL / Neon connection
+// Thiết lập kết nối PostgreSQL (Neon)
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,         // ví dụ: 'ep-happy-1234.ap-southeast-1.aws.neon.tech'
+  user: process.env.DB_USER,         // tên người dùng Neon
+  password: process.env.DB_PASSWORD, // mật khẩu Neon
+  database: process.env.DB_NAME,     // ví dụ: 'neondb'
   port: 5432,
-  ssl: true
+  ssl: true                          // Bắt buộc phải có với Neon
 });
 
-// Get all tabs
+// Lấy tất cả tabs
 app.get('/api/tabs', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM public.tabs ORDER BY id');
@@ -29,7 +28,7 @@ app.get('/api/tabs', async (req, res) => {
   }
 });
 
-// Add tab
+// Thêm tab
 app.post('/api/tabs', async (req, res) => {
   const { name, content } = req.body;
   try {
@@ -43,7 +42,7 @@ app.post('/api/tabs', async (req, res) => {
   }
 });
 
-// Delete tab
+// Xóa tab
 app.delete('/api/tabs/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -57,7 +56,7 @@ app.delete('/api/tabs/:id', async (req, res) => {
   }
 });
 
-// Update tab
+// Cập nhật tab
 app.put('/api/tabs/:id', async (req, res) => {
   const { id } = req.params;
   const { name, content } = req.body;
