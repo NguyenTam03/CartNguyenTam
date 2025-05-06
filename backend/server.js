@@ -7,7 +7,15 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+const path = require('path');
 
+// Phục vụ static frontend
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Fallback route để mở index.html khi truy cập /
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 // Thiết lập kết nối PostgreSQL (Neon)
 const pool = new Pool({
   host: process.env.DB_HOST,         // ví dụ: 'ep-happy-1234.ap-southeast-1.aws.neon.tech'
