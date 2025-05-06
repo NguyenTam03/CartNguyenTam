@@ -91,4 +91,3 @@ app.put('/api/tabs/:id', async (req, res) => {
 });
 
 // Bắt đầu server
-app.listen(port, () => console.log(`Server running on port ${port}`));
