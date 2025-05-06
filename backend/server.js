@@ -6,12 +6,15 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Cấu hình CORS đúng
-app.use(cors({
-    origin: 'https://cartnguyentam.onrender.com', // frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
+// Cấu hình CORS đúng (chắc chắn rằng nó luôn hoạt động)
+const corsOptions = {
+  origin: 'https://cartnguyentam.onrender.com', // URL của frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, // Chắc chắn rằng bạn cho phép gửi cookies (nếu cần)
+  allowedHeaders: ['Content-Type', 'Authorization'] // Thêm headers cần thiết nếu có
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -86,4 +89,5 @@ app.put('/api/tabs/:id', async (req, res) => {
   }
 });
 
+// Bắt đầu server
 app.listen(port, () => console.log(`Server running on port ${port}`));
