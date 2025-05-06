@@ -10,14 +10,12 @@
       font-family: sans-serif;
       margin: 0;
     }
-
     .tab-bar {
       display: flex;
-      flex-wrap: wrap; /* 👈 Cho phép xuống dòng */
+      flex-wrap: wrap;
       padding: 10px;
       background: #333;
     }
-
     .tab {
       padding: 10px;
       background: #444;
@@ -25,11 +23,9 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
     .tab.active {
       background: #007bff;
     }
-
     .delete-button {
       margin: 10px;
       background: #ff4d4d;
@@ -39,36 +35,27 @@
       padding: 8px 12px;
       cursor: pointer;
     }
-
     .delete-button:hover {
       background: #e60000;
     }
-
     .container {
       padding: 20px;
     }
-
     textarea {
       width: 100%;
       height: 6em;
       margin: 5px 0;
       resize: vertical;
     }
-
     button {
       margin: 5px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Tab bar -->
   <div class="tab-bar" id="tabBar"></div>
-
-  <!-- Delete button nằm dưới tab bar -->
   <button class="delete-button" onclick="deleteCurrentTab()">Delete</button>
 
-  <!-- Nội dung chỉnh sửa -->
   <div class="container">
     <input type="text" id="tabName" placeholder="Tab name" style="width: 300px;" />
     <button onclick="saveTab()">Save</button>
@@ -78,19 +65,19 @@
   </div>
 
   <script>
+    const API_BASE = window.location.origin.includes('localhost')
+      ? 'http://localhost:3000'
+      : 'https://cartnguyentam.onrender.com';
+
     let tabs = [];
     let currentTabId = null;
 
     function fetchTabs() {
-      fetch('http://localhost:3000/api/tabs')
+      fetch(`${API_BASE}/api/tabs`)
         .then(res => res.json())
         .then(data => {
-          if (Array.isArray(data)) {
-            tabs = data;
-            renderTabs();
-          } else {
-            console.error('Lỗi lấy danh sách tab:', data);
-          }
+          tabs = Array.isArray(data) ? data : [];
+          renderTabs();
         })
         .catch(err => console.error('Lỗi fetchTabs:', err));
     }
@@ -98,7 +85,7 @@
     function renderTabs() {
       const tabBar = document.getElementById('tabBar');
       tabBar.innerHTML = '';
-    
+
       tabs.forEach(tab => {
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
@@ -112,14 +99,14 @@
         };
         tabBar.appendChild(div);
       });
-    
+
       const plus = document.createElement('div');
       plus.className = 'tab';
       plus.innerText = '+';
       plus.onclick = () => {
+        currentTabId = null;
         document.getElementById('tabName').value = '';
         document.getElementById('mainContent').value = '';
-        currentTabId = null;
         renderContentBoxes('');
         renderTabs();
       };
@@ -129,21 +116,20 @@
     function saveTab() {
       const name = document.getElementById('tabName').value;
       const content = document.getElementById('mainContent').value;
-    
+
       const url = currentTabId
-        ? `http://localhost:3000/api/tabs/${currentTabId}`
-        : 'http://localhost:3000/api/tabs';
-    
+        ? `${API_BASE}/api/tabs/${currentTabId}`
+        : `${API_BASE}/api/tabs`;
+
       const method = currentTabId ? 'PUT' : 'POST';
-    
+
       fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, content, tabId: currentTabId })
+        body: JSON.stringify({ name, content })
       })
         .then(res => res.json())
         .then(data => {
-          console.log('Saved:', data);
           fetchTabs();
           renderContentBoxes(content);
         })
@@ -151,12 +137,9 @@
     }
 
     function deleteCurrentTab() {
-      if (!currentTabId) {
-        alert("No tab selected.");
-        return;
-      }
-      if (!confirm("Are you sure you want to delete this tab?")) return;
-      fetch(`http://localhost:3000/api/tabs/${currentTabId}`, {
+      if (!currentTabId || !confirm("Are you sure you want to delete this tab?")) return;
+
+      fetch(`${API_BASE}/api/tabs/${currentTabId}`, {
         method: 'DELETE'
       })
         .then(() => {
@@ -195,8 +178,6 @@
         container.appendChild(copyBtn);
       });
     }
-
-    
 
     fetchTabs();
   </script>
