@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Tab Content Manager</title>
@@ -10,12 +11,14 @@
       font-family: sans-serif;
       margin: 0;
     }
+
     .tab-bar {
       display: flex;
       flex-wrap: wrap;
       padding: 10px;
       background: #333;
     }
+
     .tab {
       padding: 10px;
       background: #444;
@@ -23,9 +26,11 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
     .tab.active {
       background: #007bff;
     }
+
     .delete-button {
       margin: 10px;
       background: #ff4d4d;
@@ -35,32 +40,54 @@
       padding: 8px 12px;
       cursor: pointer;
     }
+
+    .copy-button,
+    .save-button {
+      margin: 10px;
+      background: #1717e6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .copy-button:hover,
+    .save-button:hover {
+      background: #218838;
+    }
+
     .delete-button:hover {
       background: #e60000;
     }
+
     .container {
       padding: 20px;
     }
+
     textarea {
-      width: 100%;
+      width: 500px;
       height: 6em;
       margin: 5px 0;
       resize: vertical;
     }
+
     button {
       margin: 5px;
     }
   </style>
 </head>
+
 <body>
   <div class="tab-bar" id="tabBar"></div>
   <button class="delete-button" onclick="deleteCurrentTab()">Delete</button>
 
   <div class="container">
     <input type="text" id="tabName" placeholder="Tab name" style="width: 300px;" />
-    <button onclick="saveTab()">Save</button>
+    <button class="save-button" onclick="saveTab()">Save</button>
+
     <br>
-    <textarea id="mainContent" placeholder="Paste 500 lines here..." rows="10" style="width: 80%;"></textarea>
+    <textarea id="mainContent" placeholder="Paste 500 lines here..." rows="10" style="width: 500px;"></textarea>
     <div id="textAreas"></div>
   </div>
 
@@ -162,22 +189,35 @@
       chunks.forEach(chunk => {
         const textarea = document.createElement('textarea');
         textarea.value = chunk;
+        textarea.readOnly = true; // Chỉ cho copy, không sửa
 
         const copyBtn = document.createElement('button');
         copyBtn.innerText = 'Copy';
+        copyBtn.className = 'copy-button';
         copyBtn.onclick = () => {
           textarea.select();
           document.execCommand('copy');
           copyBtn.innerText = 'Copied!';
-          setTimeout(() => copyBtn.innerText = 'Copy', 1000);
+          const originalColor = copyBtn.style.backgroundColor;
+          copyBtn.style.backgroundColor = '#28a745'; // màu xanh lá cây
+
         };
 
-        container.appendChild(textarea);
-        container.appendChild(copyBtn);
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.flexDirection = 'column';
+        wrapper.style.alignItems = 'flex-start'; // canh trái, có thể đổi nếu muốn
+
+        wrapper.appendChild(textarea);
+        wrapper.appendChild(copyBtn);
+
+        container.appendChild(wrapper);
       });
     }
+
 
     fetchTabs();
   </script>
 </body>
+
 </html>
