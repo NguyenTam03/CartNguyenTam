@@ -26,6 +26,7 @@
       margin: 5px 5px 0 0;
       border-radius: 6px;
       cursor: pointer;
+      user-select: none;
     }
 
     .tab.active {
@@ -116,6 +117,9 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
+        div.draggable = true; // Cho phép kéo
+        div.dataset.id = tab.id; // Thêm thuộc tính id cho tab
+
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
@@ -123,6 +127,12 @@
           renderContentBoxes(tab.content);
           renderTabs();
         };
+
+        // Thêm sự kiện kéo
+        div.addEventListener('dragstart', handleDragStart);
+        div.addEventListener('dragover', handleDragOver);
+        div.addEventListener('drop', handleDrop);
+
         tabBar.appendChild(div);
       });
 
@@ -224,6 +234,34 @@
       });
     }
 
+    // Các hàm xử lý drag and drop
+    function handleDragStart(event) {
+      event.dataTransfer.setData('text', event.target.dataset.id);
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      const draggedTabId = event.dataTransfer.getData('text');
+      const targetTabId = event.target.dataset.id;
+
+      if (draggedTabId === targetTabId) return;
+
+      // Cập nhật lại vị trí của các tab trong mảng
+      const draggedTabIndex = tabs.findIndex(tab => tab.id === draggedTabId);
+      const targetTabIndex = tabs.findIndex(tab => tab.id === targetTabId);
+
+      if (draggedTabIndex === -1 || targetTabIndex === -1) return;
+
+      const [draggedTab] = tabs.splice(draggedTabIndex, 1);
+      tabs.splice(targetTabIndex, 0, draggedTab);
+
+      // Gọi lại API để lưu lại thứ tự tab mới
+      fetchTabs();
+    }
 
     fetchTabs();
   </script>
