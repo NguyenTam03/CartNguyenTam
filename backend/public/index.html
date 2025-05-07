@@ -67,7 +67,7 @@
     }
 
     textarea {
-      width: 900%;
+      width: 90%;
       height: 6em;
       margin: 5px 0;
       resize: vertical;
@@ -198,10 +198,16 @@
         copyBtn.onclick = () => {
           textarea.select();
           document.execCommand('copy');
+          textarea.blur(); // ✅ Loại bỏ chọn văn bản sau khi copy
+        
           copyBtn.innerText = 'Copied!';
-          const originalColor = copyBtn.style.backgroundColor;
-          copyBtn.style.backgroundColor = '#28a745'; // màu xanh lá cây
-
+          copyBtn.style.backgroundColor = '#28a745'; // Màu xanh "copied"
+        
+          // ✅ Sau 1.5s, khôi phục lại nút ban đầu
+          setTimeout(() => {
+            copyBtn.innerText = 'Copy';
+            copyBtn.style.backgroundColor = ''; // Hoặc bạn có thể đặt lại màu gốc
+          }, 5000);
         };
 
         const wrapper = document.createElement('div');
