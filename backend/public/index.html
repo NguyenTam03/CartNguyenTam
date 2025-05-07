@@ -196,18 +196,20 @@
         copyBtn.innerText = 'Copy';
         copyBtn.className = 'copy-button';
         copyBtn.onclick = () => {
-          textarea.select();
-          document.execCommand('copy');
-          textarea.blur(); // ✅ Loại bỏ chọn văn bản sau khi copy
+          navigator.clipboard.writeText(textarea.value)
+            .then(() => {
+              copyBtn.innerText = 'Copied!';
+              copyBtn.style.backgroundColor = '#28a745';
         
-          copyBtn.innerText = 'Copied!';
-          copyBtn.style.backgroundColor = '#28a745'; // Màu xanh "copied"
-        
-          // ✅ Sau 1.5s, khôi phục lại nút ban đầu
-          setTimeout(() => {
-            copyBtn.innerText = 'Copy';
-            copyBtn.style.backgroundColor = ''; // Hoặc bạn có thể đặt lại màu gốc
-          }, 5000);
+              setTimeout(() => {
+                copyBtn.innerText = 'Copy';
+                copyBtn.style.backgroundColor = '#1717e6';
+              }, 5000);
+            })
+            .catch(err => {
+              console.error('Copy failed:', err);
+              alert('Copy failed. Please try manually.');
+            });
         };
 
         const wrapper = document.createElement('div');
