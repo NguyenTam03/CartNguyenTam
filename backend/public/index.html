@@ -126,12 +126,7 @@
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
-          const updateAtDate = new Date(tab.updatedAt);
-    if (!isNaN(updateAtDate.getTime())) {
-      document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${updateAtDate.toLocaleString()}`;
-    } else {
-      document.getElementById('updatedAtLabel').innerHTML = '<strong>Last updated:</strong> Invalid date';
-    }
+      document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updatedAt}`;
           renderContentBoxes(tab.content);
           renderTabs();
         };
