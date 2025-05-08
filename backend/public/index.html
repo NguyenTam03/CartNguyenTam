@@ -26,7 +26,6 @@
       margin: 5px 5px 0 0;
       border-radius: 6px;
       cursor: pointer;
-      user-select: none;
     }
 
     .tab.active {
@@ -117,9 +116,6 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
-        div.draggable = true; // Cho phép kéo
-        div.dataset.id = tab.id; // Thêm thuộc tính id cho tab
-
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
@@ -127,12 +123,6 @@
           renderContentBoxes(tab.content);
           renderTabs();
         };
-
-        // Thêm sự kiện kéo
-        div.addEventListener('dragstart', handleDragStart);
-        div.addEventListener('dragover', handleDragOver);
-        div.addEventListener('drop', handleDrop);
-
         tabBar.appendChild(div);
       });
 
@@ -188,80 +178,61 @@
         .catch(err => console.error('Lỗi xóa tab:', err));
     }
 
-    function renderContentBoxes(content) {
-      const lines = content.split('\n');
-      const chunks = Array.from({ length: 5 }, (_, i) =>
-        lines.slice(i * 100, (i + 1) * 100).join('\n')
-      );
+    function renderContentBoxes(tab) {
+  const content = typeof tab === 'string' ? tab : (tab.content || '');
+  const lines = content.split('\n');
+  const chunks = Array.from({ length: 5 }, (_, i) =>
+    lines.slice(i * 100, (i + 1) * 100).join('\n')
+  );
 
-      const container = document.getElementById('textAreas');
-      container.innerHTML = '';
+  const container = document.getElementById('textAreas');
+  container.innerHTML = '';
 
-      chunks.forEach(chunk => {
-        const textarea = document.createElement('textarea');
-        textarea.value = chunk;
-        textarea.readOnly = true; // Chỉ cho copy, không sửa
+  // ✅ Chỉ hiển thị updatedAt nếu là object
+  if (typeof tab === 'object' && tab.updateat) {
+    const updatedAtLabel = document.createElement('div');
+    updatedAtLabel.innerHTML = `<strong>Last updated:</strong> ${new Date(tab.updateat).toLocaleString()}`;
+    updatedAtLabel.style.margin = '10px 0';
+    container.appendChild(updatedAtLabel);
+  }
 
-        const copyBtn = document.createElement('button');
-        copyBtn.innerText = 'Copy';
-        copyBtn.className = 'copy-button';
-        copyBtn.onclick = () => {
-          navigator.clipboard.writeText(textarea.value)
-            .then(() => {
-              copyBtn.innerText = 'Copied!';
-              copyBtn.style.backgroundColor = '#28a745';
-        
-              setTimeout(() => {
-                copyBtn.innerText = 'Copy';
-                copyBtn.style.backgroundColor = '#1717e6';
-              }, 5000);
-            })
-            .catch(err => {
-              console.error('Copy failed:', err);
-              alert('Copy failed. Please try manually.');
-            });
-        };
+  chunks.forEach(chunk => {
+    const textarea = document.createElement('textarea');
+    textarea.value = chunk;
+    textarea.readOnly = true;
 
-        const wrapper = document.createElement('div');
-        wrapper.style.display = 'flex';
-        wrapper.style.flexDirection = 'column';
-        wrapper.style.alignItems = 'flex-start'; // canh trái, có thể đổi nếu muốn
+    const copyBtn = document.createElement('button');
+    copyBtn.innerText = 'Copy';
+    copyBtn.className = 'copy-button';
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(textarea.value)
+        .then(() => {
+          copyBtn.innerText = 'Copied!';
+          copyBtn.style.backgroundColor = '#28a745';
+          setTimeout(() => {
+            copyBtn.innerText = 'Copy';
+            copyBtn.style.backgroundColor = '#1717e6';
+          }, 5000);
+        })
+        .catch(err => {
+          console.error('Copy failed:', err);
+          alert('Copy failed. Please try manually.');
+        });
+    };
 
-        wrapper.appendChild(textarea);
-        wrapper.appendChild(copyBtn);
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.alignItems = 'flex-start';
 
-        container.appendChild(wrapper);
-      });
-    }
+    wrapper.appendChild(textarea);
+    wrapper.appendChild(copyBtn);
+    container.appendChild(wrapper);
+  });
+}
 
-    // Các hàm xử lý drag and drop
-    function handleDragStart(event) {
-      event.dataTransfer.setData('text', event.target.dataset.id);
-    }
 
-    function handleDragOver(event) {
-      event.preventDefault();
-    }
 
-    function handleDrop(event) {
-      event.preventDefault();
-      const draggedTabId = event.dataTransfer.getData('text');
-      const targetTabId = event.target.dataset.id;
-
-      if (draggedTabId === targetTabId) return;
-
-      // Cập nhật lại vị trí của các tab trong mảng
-      const draggedTabIndex = tabs.findIndex(tab => tab.id === draggedTabId);
-      const targetTabIndex = tabs.findIndex(tab => tab.id === targetTabId);
-
-      if (draggedTabIndex === -1 || targetTabIndex === -1) return;
-
-      const [draggedTab] = tabs.splice(draggedTabIndex, 1);
-      tabs.splice(targetTabIndex, 0, draggedTab);
-
-      // Gọi lại API để lưu lại thứ tự tab mới
-      fetchTabs();
-    }
 
     fetchTabs();
   </script>

@@ -81,7 +81,7 @@ app.put('/api/tabs/:id', async (req, res) => {
   const { name, content } = req.body;
   try {
     await pool.query(
-      'UPDATE public.tabs SET name = $1, content = $2 WHERE id = $3',
+      'UPDATE public.tabs SET name = $1, content = $2, updateAt = now() WHERE id = $3',
       [name, content, id]
     );
     res.json({ success: true });
