@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
 const path = require('path');
+const { Console } = require('console');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -42,6 +43,7 @@ app.get('/api/tabs', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM public.tabs ORDER BY id');
     res.json(result.rows);
+        Console.log(result)
   } catch (err) {
     res.status(500).send(err.message);
   }
