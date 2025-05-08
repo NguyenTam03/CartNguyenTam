@@ -76,6 +76,12 @@
     button {
       margin: 5px;
     }
+    #updatedAtLabel {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
   </style>
 </head>
 
@@ -133,6 +139,7 @@
         currentTabId = null;
         document.getElementById('tabName').value = '';
         document.getElementById('mainContent').value = '';
+        document.getElementById('updatedAtLabel').value = '';
         renderContentBoxes('');
         renderTabs();
       };
@@ -172,6 +179,7 @@
           currentTabId = null;
           document.getElementById('tabName').value = '';
           document.getElementById('mainContent').value = '';
+          document.getElementById('updatedAtLabel').value = '';
           renderContentBoxes('');
           fetchTabs();
         })
@@ -187,12 +195,6 @@
 
       const container = document.getElementById('textAreas');
       container.innerHTML = '';
-
-      // Hiển thị ngày cập nhật (updatedAt) dưới nút Save
-      if (tab && tab.updatedAt) {
-        const updatedAtLabel = document.getElementById('updatedAtLabel');
-        updatedAtLabel.innerHTML = `<strong>Last updated:</strong> ${new Date(tab.updatedAt).toLocaleString()}`;
-      }
 
       chunks.forEach(chunk => {
         const textarea = document.createElement('textarea');
