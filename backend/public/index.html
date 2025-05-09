@@ -122,6 +122,7 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
+        console.log('Tab data:', tab); 
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
