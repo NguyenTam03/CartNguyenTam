@@ -43,7 +43,6 @@ app.get('/api/tabs', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM public.tabs ORDER BY id');
     res.json(result.rows);
-    console.log(result.rows);
   } catch (err) {
     res.status(500).send(err.message);
   }

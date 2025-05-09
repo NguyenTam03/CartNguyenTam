@@ -127,7 +127,7 @@
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
-      document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updatedAt}`;
+      document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updated_at}`;
           renderContentBoxes(tab.content);
           renderTabs();
         };
