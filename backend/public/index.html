@@ -122,14 +122,13 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
-        console.log('Tab data:', tab); 
+        console.log('Tab data:', tab.updateAt); 
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
-      document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updated_at}`;
+          document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updateAt}`;
           renderContentBoxes(tab.content);
-          renderTabs();
         };
         tabBar.appendChild(div);
       });
