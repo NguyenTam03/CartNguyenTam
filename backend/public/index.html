@@ -130,9 +130,9 @@
           document.getElementById('updatedAtLabel').value = tab.updateAt;
           document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updateAt}`;
           renderContentBoxes(tab.content);
+          renderTabs();
         };
         tabBar.appendChild(div);
-        renderTabs();
       });
 
       const plus = document.createElement('div');
