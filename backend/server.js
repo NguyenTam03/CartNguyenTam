@@ -80,6 +80,9 @@ app.delete('/api/tabs/:id', async (req, res) => {
 app.put('/api/tabs/:id', async (req, res) => {
   const { id } = req.params;
   const { name, content } = req.body;
+
+  console.log('PUT /api/tabs/:id', { id, name, content }); // ➤ Log để debug
+
   try {
     await pool.query(
       'UPDATE public.tabs SET name = $1, content = $2, updateAt = now() WHERE id = $3',
@@ -87,8 +90,10 @@ app.put('/api/tabs/:id', async (req, res) => {
     );
     res.json({ success: true });
   } catch (err) {
+    console.error('PUT error:', err); // ➤ Log lỗi chi tiết ra console
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Bắt đầu server
