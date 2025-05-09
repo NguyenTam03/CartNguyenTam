@@ -128,9 +128,11 @@
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
           document.getElementById('updatedAtLabel').value = tab.updateAt;
+          document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updateAt}`;
           renderContentBoxes(tab.content);
         };
         tabBar.appendChild(div);
+        renderTabs();
       });
 
       const plus = document.createElement('div');
