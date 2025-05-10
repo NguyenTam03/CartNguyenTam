@@ -78,7 +78,7 @@
     }
     #updatedAtLabel {
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 15px;
   color: #ffffff;
 }
 
@@ -152,7 +152,7 @@
     function saveTab() {
       const name = document.getElementById('tabName').value;
       const content = document.getElementById('mainContent').value;
-
+      renderContentBoxes('');
       const url = currentTabId
         ? `${API_BASE}/api/tabs/${currentTabId}`
         : `${API_BASE}/api/tabs`;

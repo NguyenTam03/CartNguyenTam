@@ -85,9 +85,11 @@ app.put('/api/tabs/:id', async (req, res) => {
 
   try {
     await pool.query(
-      'UPDATE public.tabs SET name = $1, content = $2, "updateAt" = now() WHERE id = $3',
-      [name, content, id]
-    );
+  `UPDATE public.tabs 
+   SET name = $1, content = $2, "updateAt" = now() AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh'
+   WHERE id = $3`,
+  [name, content, id]
+);
     res.json({ success: true });
   } catch (err) {
     console.error('PUT error:', err); // ➤ Log lỗi chi tiết ra console
