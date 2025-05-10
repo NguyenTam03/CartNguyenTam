@@ -197,7 +197,7 @@
 
             document.getElementById('updatedAtLabel').innerHTML = `<strong>Lần cập nhật cuối:</strong> ${vnTime.replace(',', ' lúc')}`;
 
-            renderContentBoxes(updatedTab.content);
+            renderContentBoxes(document.getElementById('mainContent').value);
             renderTabs();
           }
         })
