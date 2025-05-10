@@ -76,12 +76,12 @@
     button {
       margin: 5px;
     }
-    #updatedAtLabel {
-  margin-top: 10px;
-  font-size: 15px;
-  color: #ffffff;
-}
 
+    #updatedAtLabel {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #ffffff;
+    }
   </style>
 </head>
 
@@ -122,13 +122,23 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
-        console.log('Tab update:', tab.updateAt); 
+        console.log('Tab update:', tab.updateAt);
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
           document.getElementById('updatedAtLabel').value = tab.updateAt;
-          document.getElementById('updatedAtLabel').innerHTML = `<strong>Last updated:</strong> ${tab.updateAt}`;
+          const updateDate = new Date(tab.updateAt);
+          const vnTime = updateDate.toLocaleString('vi-VN', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour12: false
+          });
+          document.getElementById('updatedAtLabel').innerHTML = `<strong>Lần cập nhật cuối:</strong> ${vnTime.replace(',', ' lúc')}`;
           renderContentBoxes(tab.content);
           renderTabs();
         };
@@ -165,9 +175,34 @@
         body: JSON.stringify({ name, content })
       })
         .then(res => res.json())
-        .then(data => {
-          fetchTabs();
-          renderContentBoxes(content);
+        .then(async data => {
+          await fetchTabs(); // đảm bảo tabs được cập nhật
+          // Nếu là tab mới thì gán lại currentTabId
+          if (!currentTabId && data.id) {
+            currentTabId = data.id;
+          }
+          // Tìm lại tab hiện tại từ danh sách mới
+          const updatedTab = tabs.find(tab => tab.id === currentTabId);
+          if (updatedTab) {
+            document.getElementById('tabName').value = updatedTab.name;
+            document.getElementById('mainContent').value = updatedTab.content;
+
+            const updateDate = new Date(updatedTab.updateAt);
+            const vnTime = updateDate.toLocaleString('vi-VN', {
+              timeZone: 'Asia/Ho_Chi_Minh',
+              hour: '2-digit',
+              minute: '2-digit',
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour12: false
+            });
+
+            document.getElementById('updatedAtLabel').innerHTML = `<strong>Lần cập nhật cuối:</strong> ${vnTime.replace(',', ' lúc')}`;
+
+            renderContentBoxes(updatedTab.content);
+            renderTabs();
+          }
         })
         .catch(err => console.error('Lỗi lưu tab:', err));
     }
