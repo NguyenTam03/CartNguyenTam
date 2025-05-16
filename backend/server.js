@@ -34,7 +34,7 @@ const pool = new Pool({
   user: process.env.DB_USER,         // tên người dùng Neon
   password: process.env.DB_PASSWORD, // mật khẩu Neon
   database: process.env.DB_NAME,     // ví dụ: 'neondb'
-  port: 5432,
+  port: 6543,
   ssl: true                          // Bắt buộc phải có với Neon
 });
 
