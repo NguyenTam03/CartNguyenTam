@@ -30,13 +30,16 @@ app.get('/', (req, res) => {
 
 // Thiết lập kết nối PostgreSQL (Neon)
 const pool = new Pool({
-  host: process.env.DB_HOST,         // ví dụ: 'ep-happy-1234.ap-southeast-1.aws.neon.tech'
-  user: process.env.DB_USER,         // tên người dùng Neon
-  password: process.env.DB_PASSWORD, // mật khẩu Neon
-  database: process.env.DB_NAME,     // ví dụ: 'neondb'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   port: 6543,
-  ssl: true                          // Bắt buộc phải có với Neon
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 // Lấy tất cả tabs
 app.get('/api/tabs', async (req, res) => {
