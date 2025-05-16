@@ -29,15 +29,21 @@ app.get('/', (req, res) => {
 });
 
 // Thiết lập kết nối PostgreSQL (Neon)
+// const pool = new Pool({
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_NAME,
+//   port: 6543,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: 6543,
+  connectionString: 'postgresql://postgres.ostonpgrsedztehrumun:123456789Tam.@aws-0-us-east-2.pooler.supabase.com:6543/postgres',
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 
