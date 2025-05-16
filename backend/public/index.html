@@ -184,7 +184,7 @@
           // Tìm lại tab hiện tại từ danh sách mới
           const updatedTab = tabs.find(tab => tab.id === currentTabId);
           if (updatedTab) {
-            const updateDate = new Date(tab.updateat);
+            const updateDate = new Date(updatedTab.updateat);
             const vnTime = updateDate.toLocaleString('vi-VN', {
               timeZone: 'Asia/Ho_Chi_Minh',
               hour: '2-digit',
