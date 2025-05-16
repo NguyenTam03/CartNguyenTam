@@ -122,13 +122,13 @@
         const div = document.createElement('div');
         div.className = 'tab' + (tab.id === currentTabId ? ' active' : '');
         div.innerText = tab.name;
-        console.log('Tab update:', tab.updateAt);
+        console.log('Tab update:', tab.updateat);
         div.onclick = () => {
           currentTabId = tab.id;
           document.getElementById('tabName').value = tab.name;
           document.getElementById('mainContent').value = tab.content;
-          document.getElementById('updatedAtLabel').value = tab.updateAt;
-          const updateDate = new Date(tab.updateAt);
+          document.getElementById('updatedAtLabel').value = tab.updateat;
+          const updateDate = new Date(tab.updateat);
           const vnTime = updateDate.toLocaleString('vi-VN', {
             timeZone: 'Asia/Ho_Chi_Minh',
             hour: '2-digit',
@@ -184,7 +184,7 @@
           // Tìm lại tab hiện tại từ danh sách mới
           const updatedTab = tabs.find(tab => tab.id === currentTabId);
           if (updatedTab) {
-            const updateDate = new Date(updatedTab.updateAt);
+            const updateDate = new Date(data.updateat);
             const vnTime = updateDate.toLocaleString('vi-VN', {
               timeZone: 'Asia/Ho_Chi_Minh',
               hour: '2-digit',
