@@ -59,11 +59,11 @@ app.get('/api/tabs', async (req, res) => {
 
 // Thêm tab
 app.post('/api/tabs', async (req, res) => {
-  const { name, content } = req.body;
+  const { name, content, catid } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO public.tabs (name, content) VALUES ($1, $2) RETURNING id',
-      [name, content]
+      'INSERT INTO public.tabs (name, content, catid) VALUES ($1, $2, $3) RETURNING id',
+[name, content, catid]
     );
     res.json({ success: true, id: result.rows[0].id });
   } catch (err) {
@@ -88,14 +88,15 @@ app.delete('/api/tabs/:id', async (req, res) => {
 // Cập nhật tab
 app.put('/api/tabs/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, content } = req.body;
+  const { name, content, catid } = req.body;
+
 
   console.log('PUT /api/tabs/:id', { id, name, content }); // ➤ Log để debug
 
   try {
     await pool.query(
-      'UPDATE public.tabs SET name = $1, content = $2, "updateat" = now() WHERE id = $3',
-      [name, content, id]
+      'UPDATE public.tabs SET name = $1, content = $2, catid = $3, "updateat" = now() WHERE id = $4',
+[name, content, catid, id]
     );
     res.json({ success: true });
   } catch (err) {

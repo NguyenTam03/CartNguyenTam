@@ -7,8 +7,21 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "mysql2": "^3.6.0",
-    "pg": "^8.15.6"
-  }
+    "pg": "^8.16.0"
+  },
+  "description": "Simple Node.js + MySQL app with tabbed text editor.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NguyenTam03/CartNguyenTam.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NguyenTam03/CartNguyenTam/issues"
+  },
+  "homepage": "https://github.com/NguyenTam03/CartNguyenTam#readme"
 }
