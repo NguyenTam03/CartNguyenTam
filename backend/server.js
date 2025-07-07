@@ -10,7 +10,7 @@ app.listen(port, () => console.log(`Server running on port ${port}`));
 
 // Cấu hình CORS đúng (chắc chắn rằng nó luôn hoạt động)
 const corsOptions = {
-  origin: 'https://cartnguyentam.onrender.com', // URL của frontend
+  origin: 'https://cartnguyentam.onrender.com', // URL của frontend  https://cartnguyentam.onrender.com
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // Chắc chắn rằng bạn cho phép gửi cookies (nếu cần)
   allowedHeaders: ['Content-Type', 'Authorization'] // Thêm headers cần thiết nếu có
