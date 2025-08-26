@@ -55,6 +55,8 @@ app.get('/api/tabs', async (req, res) => {
   } catch (err) {
     res.status(500).send(err.message);
   }
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log('Truy cập website từ IP:', clientIp);
 });
 
 // Thêm tab
@@ -69,6 +71,7 @@ app.post('/api/tabs', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+  console.log('Thêm tab với tên: ', { name });
 });
 
 // Xóa tab
