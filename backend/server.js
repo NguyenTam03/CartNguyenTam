@@ -71,7 +71,8 @@ app.post('/api/tabs', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-  console.log('Thêm tab với tên: ', { name });
+   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log('Thêm tab với tên: ', { name }, "với IP: ", clientIp);
 });
 
 // Xóa tab
@@ -92,10 +93,6 @@ app.delete('/api/tabs/:id', async (req, res) => {
 app.put('/api/tabs/:id', async (req, res) => {
   const { id } = req.params;
   const { name, content, catid } = req.body;
-
-
-  console.log('PUT /api/tabs/:id', { id, name, content }); // ➤ Log để debug
-
   try {
     await pool.query(
       'UPDATE public.tabs SET name = $1, content = $2, catid = $3, "updateat" = now() WHERE id = $4',
